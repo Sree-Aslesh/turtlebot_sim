@@ -3,7 +3,7 @@
   <joint name="turtlebot__hokuyo_joint" type="fixed">
     <parent link="turtlebot/create::base"/>
     <child link="turtlebot/hokuyo::link"/>
-    <origin rpy="0  0  0" xyz="0       0       1.03499"/>
+    <origin rpy="0  0  0" xyz="0       0       0.45"/>
     <axis xyz="0  0  1"/>
     <limit effort="0.0" lower="0.0" upper="0.0" velocity="0.0"/>
   </joint>
