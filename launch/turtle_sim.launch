@@ -1,0 +1,26 @@
+<launch>
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <param name="robot_description" textfile="/home/sree/catkin_ws/src/turtlebot_sim/models/turtlebot/model.urdf" />
+
+  
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub">
+    <param name="use_tf_static" value="false" />
+    </node>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find turtlebot_sim)/worlds/turtle_sim.world"/>
+    <!-- more default parameters can be changed here -->
+  </include>
+
+   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find turtlebot_sim)/rviz/basic_rviz_config.rviz" />
+
+   <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping">
+    <remap from="/scan" to="/hokuyo_laser"/>
+    <param name="odom_frame" value="turtlebot/odom"/>
+    <param name="base_frame" value="turtlebot/create::base"/>
+  </node>
+
+</launch>
