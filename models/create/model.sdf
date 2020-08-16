@@ -156,6 +156,11 @@
             <resolution>0.100000</resolution>
           </range>
         </ray>
+        <plugin name="rightfront_cliff_sensor" filename="libgazebo_ros_laser.so">
+          <visualize>true</visualize>
+         <topicName>/rightfront_cliff_sensor</topicName> 
+         <frameName>base</frameName>
+       </plugin>
       </sensor>
       <sensor name="wall_sensor" type="ray">
         <pose>0.090000 -0.120000 0.059000 0 0 -1.000000</pose>
