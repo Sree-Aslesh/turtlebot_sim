@@ -22,6 +22,18 @@ vel_msg.angular.x = 0
 vel_msg.angular.y = 0
 vel_msg.angular.z = 0
 
+# def turn_right():
+
+
+# def turn_left():
+
+
+# def swerve_left():
+
+
+# def swerve_right():
+
+
 def laser_callback(laser):
     #print("reading laser scan data")
     global turn,turn_speed,velocity_publisher,vel_msg
