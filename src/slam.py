@@ -2,6 +2,7 @@
 
 import rospy
 import tf
+import heapq
 from geometry_msgs.msg import Twist,PoseStamped,Pose
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import MapMetaData,OccupancyGrid,Path
@@ -29,6 +30,7 @@ vel_msg.angular.z = 0
 goal = PoseStamped()
 poseReceived = False
 listener = None
+goal = None
 
 
 map_metadata = MapMetaData()
@@ -49,34 +51,96 @@ def createPose(x=0,y=0,z=0,roll=0,pitch=0,yaw=0):
     pose_stamped.header.stamp = rospy.Time.now()
     return pose_stamped
 
+
+def getIndex(row,col):
+    return (row*4000+col)
+
+
+def heuristicDistance(x1,y1,x2,y2):
+    return (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)
+
+def inBounds(x,y):
+    if(getIndex(x,y)>=0 and getIndex(x,y)<4000*4000):
+        return True
+    return False
+
+def shortestPath(curr_x,curr_y,des_x,des_y,map,pathList,visited):
+    # print("[shortestPath] - checking for " + str(curr_x) + " " + str(curr_y)+ " index given is " +str(getIndex(curr_x,curr_y)))
+    # print("[shortestPath] - destination is " + str(des_x) + " " + str(des_y)+ " index given is " +str(getIndex(curr_x,curr_y)))
+    # print("length of map is " + str(len(map.data)))
+    if(getIndex(curr_x,curr_y)<0 or visited[getIndex(curr_x,curr_y)] == 1 or map.data[getIndex(curr_x,curr_y)]>60):
+        return []
+
+    if(curr_x==des_x and curr_y == des_y):
+        return pathList
+
+    visited[getIndex(curr_x,curr_y)] = 1
+    pathList.append([curr_x,curr_y])
+
+    tempList = []
+    if(inBounds(curr_x+1,curr_y)):
+        tempList.append([heuristicDistance(curr_x+1,curr_y,des_x,des_y),curr_x+1,curr_y])
+    if(inBounds(curr_x-1,curr_y)):
+        tempList.append([heuristicDistance(curr_x-1,curr_y,des_x,des_y),curr_x-1,curr_y])
+    if(inBounds(curr_x,curr_y+1)):
+        tempList.append([heuristicDistance(curr_x,curr_y+1,des_x,des_y),curr_x,curr_y+1])
+    if(inBounds(curr_x,curr_y-1)):
+        tempList.append([heuristicDistance(curr_x,curr_y-1,des_x,des_y),curr_x,curr_y-1])
+    heapq.heapify(tempList)
+    for val in tempList:
+        temp_data = shortestPath(val[1],val[2],des_x,des_y,map,pathList,visited)
+        if(temp_data!=[]):
+            return temp_data
+
+    pathList = pathList[:-1]
+    return []
+
+
+
+
 def getMap(map):
     print("[getMap] - Received map")
 
+    if(poseReceived!=True):
+        return
     
     (trans,rot) = listener.lookupTransform('map', 'turtlebot/create::base', rospy.Time(0))
-    print(trans)
-    print(rot)
+
+    # path = Path()
+    # path.header.frame_id="map"
+    # for cnt in range(0,20):
+    #     path.poses.append(createPose(x=trans[0],y=trans[1]+cnt))
+
+    # globalPathPublisher.publish(path)
+
+    grid_curr_x = int((trans[0] - map_metadata.origin.position.x) / float(map_metadata.resolution))
+    grid_curr_y = int((trans[1] - map_metadata.origin.position.y) / float(map_metadata.resolution))
+    
+    destination_x = goal.pose.position.x
+    destination_y = goal.pose.position.y
+
+    grid_des_x = int((destination_x- map_metadata.origin.position.x)/map_metadata.resolution)
+    grid_des_y = int((destination_y- map_metadata.origin.position.y)/map_metadata.resolution)
+
+    visited = [0]*(4000*4000)
+    pathList = []
+    pathList = shortestPath(grid_curr_x,grid_curr_y,grid_des_x,grid_des_y,map,pathList,visited)
+    print(pathList)
 
     path = Path()
     path.header.frame_id="map"
-    for cnt in range(0,20):
-        path.poses.append(createPose(x=trans[0],y=trans[1]+cnt))
-
+    for i,val in enumerate(pathList):
+        path.poses.append(createPose(x=val[0]*map_metadata.resolution+map_metadata.origin.position.x,y=val[1]*map_metadata.resolution+map_metadata.origin.position.y))
     globalPathPublisher.publish(path)
-
-    grid_x = int((trans[0] - map_metadata.origin.position.x) / float(map_metadata.resolution))
-    grid_y = int((trans[1] - map_metadata.origin.position.y) / float(map_metadata.resolution))
-    print([grid_x,grid_y])
-
     
 
 
 def goalPose(goal_input):
-    global poseReceived
+    global poseReceived,goal
     print("[goalPose] - Received goal location .. Starting SLAM")
     goal = goal_input
     poseReceived = True
-    print(goal.pose.position.x)
+    # print(goal.pose.position.x)
 
 
 def laser_callback(laser):
