@@ -8,11 +8,9 @@ Panels:
         - /Odometry1/Covariance1
         - /TF1
         - /TF1/Tree1
-        - /TF1/Tree1/map1
-        - /TF1/Tree1/map1/turtlebot/odom1
         - /RobotModel1
         - /Path1
-        - /Path1/Status1
+        - /Path2
       Splitter Ratio: 0.579250693321228
     Tree Height: 1086
   - Class: rviz/Selection
@@ -235,6 +233,29 @@ Visualization Manager:
       Topic: /globalPath
       Unreliable: false
       Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 114; 159; 207
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic: /localPath
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -263,25 +284,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 88.02967834472656
+      Distance: 27.822431564331055
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -4.144295692443848
-        Y: -8.491777420043945
-        Z: 1.3710544109344482
+        X: -12.557397842407227
+        Y: -2.0595321655273438
+        Z: 1.1781737804412842
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0753978490829468
+      Pitch: 0.7753980755805969
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.3253974914550781
+      Yaw: 1.4353985786437988
     Saved: ~
 Window Geometry:
   Displays:
