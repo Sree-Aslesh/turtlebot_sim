@@ -4,6 +4,9 @@ import rospy
 import tf
 import heapq
 import math
+
+
+
 from geometry_msgs.msg import Twist,PoseStamped,Pose
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import MapMetaData,OccupancyGrid,Path
@@ -28,7 +31,6 @@ vel_msg.angular.y = 0
 vel_msg.angular.z = 0
 
 
-
 goal = PoseStamped()
 poseReceived = False
 listener = None
@@ -45,12 +47,12 @@ def mapMetaData(mapMetaData_input):
     print("[mapMetaData] - Received map metadata")
     
 
-def createPose(x=0,y=0,z=0,roll=0,pitch=0,yaw=0):
+def createPose(x=0,y=0,z=0,roll=0,pitch=0,yaw=0,frame = "turtlebot/odom"):
     pose_stamped = PoseStamped()
     pose_stamped.pose.position.x = x
     pose_stamped.pose.position.y = y
     pose_stamped.pose.position.z = z
-    pose_stamped.header.frame_id = "turtlebot/odom"
+    pose_stamped.header.frame_id = frame
     pose_stamped.header.stamp = rospy.Time.now()
     return pose_stamped
 
@@ -119,15 +121,24 @@ def runTurtle(path):
     (trans,rot) = listener.lookupTransform('map', 'turtlebot/create::base', rospy.Time(0))
     linearVel = 0.3
 
+    #local path planning approach (DWA)
+    
+
     for angVel in seq(-1,1,0.2):
         localPath = Path()
         localPath.header.frame_id="map"
-        xval = trans[0]
-        yval = trans[1]
+        xval = 0
+        yval = 0
         for secs in seq(0,1,0.2):
             xval = xval + linearVel*secs + linearVel*math.cos(angVel*secs)
             yval = yval + linearVel*math.sin(angVel*secs)
-            localPath.poses.append(createPose(x=xval,y=yval))
+            pose_stamped = PoseStamped()
+            pose_stamped.pose = createPose(x=xval,y=yval,frame="turtlebot/create::base")
+            pose_stamped.header.frame_id = "turtlebot/create::base"
+            pose_stamped.header.stamp = rospy.Time.now()
+            listener.waitForTransform("map","turtlebot/create::base",rospy.Time.now(), rospy.Duration(2.0))
+            posestamp_temp = listener.transformPose("map",pose_stamped.pose,)
+            localPath.poses.append(posestamp_temp)
         localPathPublisher.publish(localPath)
         rospy.sleep(0.1)
 
