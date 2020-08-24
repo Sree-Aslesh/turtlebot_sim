@@ -7,7 +7,7 @@ Panels:
         - /Odometry1/Shape1
         - /Odometry1/Covariance1
         - /TF1
-        - /TF1/Tree1
+        - /TF1/Frames1
         - /RobotModel1
         - /Path1
         - /Path2
@@ -122,43 +122,19 @@ Visualization Manager:
       Unreliable: false
       Value: false
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
-        All Enabled: true
-        map:
-          Value: true
-        turtlebot/create::base:
-          Value: true
-        turtlebot/hokuyo::link:
-          Value: true
-        turtlebot/odom:
-          Value: true
-        turtlebot__create__left_wheel:
-          Value: true
-        turtlebot__create__right_wheel:
-          Value: true
-        turtlebot__rack:
-          Value: true
+        All Enabled: false
       Marker Scale: 10
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          turtlebot/odom:
-            turtlebot/create::base:
-              turtlebot/hokuyo::link:
-                {}
-              turtlebot__create__left_wheel:
-                {}
-              turtlebot__create__right_wheel:
-                {}
-              turtlebot__rack:
-                {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Alpha: 0.699999988079071
       Class: rviz/Map
       Color Scheme: map
@@ -233,7 +209,7 @@ Visualization Manager:
       Topic: /globalPath
       Unreliable: false
       Value: true
-    - Alpha: 1
+    - Alpha: 5
       Buffer Length: 1
       Class: rviz/Path
       Color: 114; 159; 207
@@ -255,6 +231,14 @@ Visualization Manager:
       Shaft Length: 0.10000000149011612
       Topic: /localPath
       Unreliable: false
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /marker
+      Name: Marker
+      Namespaces:
+        {}
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:
@@ -284,25 +268,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 27.822431564331055
+      Distance: 29.920387268066406
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -12.557397842407227
-        Y: -2.0595321655273438
-        Z: 1.1781737804412842
+        X: -11.278553009033203
+        Y: -4.867208003997803
+        Z: 5.610205173492432
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7753980755805969
+      Pitch: 0.9603979587554932
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.4353985786437988
+      Yaw: 1.4303985834121704
     Saved: ~
 Window Geometry:
   Displays:

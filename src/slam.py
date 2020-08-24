@@ -7,9 +7,10 @@ import math
 
 
 
-from geometry_msgs.msg import Twist,PoseStamped,Pose
+from geometry_msgs.msg import Twist,PoseStamped,Pose,Point,PointStamped
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import MapMetaData,OccupancyGrid,Path
+from visualization_msgs.msg import Marker
 
 
 
@@ -20,6 +21,7 @@ turn_rad = 1.5708
 velocity_publisher = None
 globalPathPublisher = None
 localPathPublisher = None
+markerPublisher = None
 
 vel_msg = Twist()
 
@@ -36,6 +38,7 @@ poseReceived = False
 listener = None
 goal = None
 map_holder = None
+
 
 
 map_metadata = MapMetaData()
@@ -58,7 +61,7 @@ def createPose(x=0,y=0,z=0,roll=0,pitch=0,yaw=0,frame = "turtlebot/odom"):
 
 
 def getIndex(row,col):
-    return (row*4000+col)
+    return (row+col*4000)
 
 
 def heuristicDistance(x1,y1,x2,y2):
@@ -69,35 +72,71 @@ def inBounds(x,y):
         return True
     return False
 
+def visualizeTempPath(pathList):
+    val = Marker()
+    val.header.frame_id = "/map"
+    # val.header.stamp = rospy.Time.now()
+    val.type = val.POINTS
+    val.lifetime = rospy.Duration(0)
+    val.action = val.ADD
+    val.scale.x = 0.3
+    val.scale.y = 0.3
+    val.color.a = 1.0
+    val.color.r = 0.5
+    val.color.g = 0.5 
+    val.color.b = 0.5   
+    val.pose.orientation.w = 1.0
+    for temp in pathList:
+        point = Point()
+        point.x = temp[0]*map_metadata.resolution+map_metadata.origin.position.x
+        point.y = temp[1]*map_metadata.resolution+map_metadata.origin.position.y
+        val.points.append(point)
+
+    markerPublisher.publish(val)
+    
+
+
+
+
+
+
 def shortestPath(curr_x,curr_y,des_x,des_y,map,pathList,visited):
     # print("[shortestPath] - checking for " + str(curr_x) + " " + str(curr_y)+ " index given is " +str(getIndex(curr_x,curr_y)))
     # print("[shortestPath] - destination is " + str(des_x) + " " + str(des_y)+ " index given is " +str(getIndex(curr_x,curr_y)))
     # print("length of map is " + str(len(map.data)))
-    if(getIndex(curr_x,curr_y)<0 or visited[getIndex(curr_x,curr_y)] == 1 or map.data[getIndex(curr_x,curr_y)]>60):
+    if(getIndex(curr_x,curr_y)<0 or visited[getIndex(curr_x,curr_y)] == 1 or map.data[getIndex(curr_x,curr_y)]==100):
         return []
 
-    if(curr_x==des_x and curr_y == des_y):
-        return pathList
-
+    
     visited[getIndex(curr_x,curr_y)] = 1
     pathList.append([curr_x,curr_y])
 
+    # visualizeTempPath(pathList)
+    # rospy.sleep(100)
+    if(curr_x==des_x and curr_y == des_y):
+        return pathList
+
+    
+    # print(map.data[getIndex(curr_x+1,curr_y)],map.data[getIndex(curr_x-1,curr_y)],map.data[getIndex(curr_x,curr_y+1)],map.data[getIndex(curr_x,curr_y-1)])
     tempList = []
-    if(inBounds(curr_x+1,curr_y)):
+    if(inBounds(curr_x+1,curr_y) and map.data[getIndex(curr_x+1,curr_y)]!=100):
         tempList.append([heuristicDistance(curr_x+1,curr_y,des_x,des_y),curr_x+1,curr_y])
-    if(inBounds(curr_x-1,curr_y)):
+    if(inBounds(curr_x-1,curr_y) and map.data[getIndex(curr_x-1,curr_y)]!=100):
         tempList.append([heuristicDistance(curr_x-1,curr_y,des_x,des_y),curr_x-1,curr_y])
-    if(inBounds(curr_x,curr_y+1)):
+    if(inBounds(curr_x,curr_y+1) and map.data[getIndex(curr_x,curr_y+1)]!=100):
         tempList.append([heuristicDistance(curr_x,curr_y+1,des_x,des_y),curr_x,curr_y+1])
-    if(inBounds(curr_x,curr_y-1)):
+    if(inBounds(curr_x,curr_y-1) and map.data[getIndex(curr_x,curr_y-1)]!=100):
         tempList.append([heuristicDistance(curr_x,curr_y-1,des_x,des_y),curr_x,curr_y-1])
     heapq.heapify(tempList)
+
     for val in tempList:
+        # print(val[0],val[1],val[2],map.data[getIndex(val[1],val[2])])
         temp_data = shortestPath(val[1],val[2],des_x,des_y,map,pathList,visited)
+
         if(temp_data!=[]):
             return temp_data
 
-    pathList = pathList[:-1]
+    #pathList = pathList[:-1]
     return []
 
 
@@ -107,6 +146,19 @@ def seq(start,stop,step):
         temp.append(start)
         start = start + step
     return temp
+
+def getScore(localpath,globalpath):
+    
+    score = 0
+    for val in localpath.poses:
+        dist = 10000
+        for val2 in globalpath.poses:
+            tempdist = heuristicDistance(val.pose.position.x,val.pose.position.y,val2.pose.position.x,val2.pose.position.y)
+            if(tempdist<dist):
+                dist =tempdist
+        score = score + dist
+    return score
+
 
 def runTurtle(path):
     global vel_msg
@@ -123,15 +175,25 @@ def runTurtle(path):
 
     #local path planning approach (DWA)
     
-
-    for angVel in seq(-1,1,0.2):
+    finalpath  = None
+    score = 1000000000
+    finalang = 0
+    for angVel in seq(-0.5,0.5,0.1):
         localPath = Path()
         localPath.header.frame_id="map"
         xval = 0
         yval = 0
-        for secs in seq(0,1,0.2):
-            xval = xval + linearVel*secs + linearVel*math.cos(angVel*secs)
-            yval = yval + linearVel*math.sin(angVel*secs)
+        theta = 0
+        for secs in seq(0,5,0.5):
+            # xval = xval + linearVel*secs + linearVel*math.cos(angVel*secs)
+            # yval = yval + linearVel*math.sin(angVel*secs)
+
+            dr = 2*3.14*0.033*(linearVel+angVel)*secs
+            dl = 2*3.14*0.033*(linearVel-angVel)*secs
+            dc = (dr+dl)/2
+            xval = xval + dc*math.cos(theta)
+            yval = yval + dc*math.sin(theta)
+            theta = theta + (dr-dl)/2
             pose_stamped = PoseStamped()
             pose_stamped.pose = createPose(x=xval,y=yval,frame="turtlebot/create::base")
             pose_stamped.header.frame_id = "turtlebot/create::base"
@@ -139,14 +201,41 @@ def runTurtle(path):
             listener.waitForTransform("map","turtlebot/create::base",rospy.Time.now(), rospy.Duration(2.0))
             posestamp_temp = listener.transformPose("map",pose_stamped.pose,)
             localPath.poses.append(posestamp_temp)
+
         localPathPublisher.publish(localPath)
-        rospy.sleep(0.1)
+        if(getScore(localPath,path)<score):
+            score = getScore(localPath,path)
+            finalpath = localPath
+            finalang = angVel
+    localPathPublisher.publish(finalpath)
+    vel_msg.linear.x = linearVel
+    vel_msg.angular.z = finalang
+    velocity_publisher.publish(vel_msg)
+    rospy.sleep(0.05)
 
-
-
+# def getPoint(point):
+#     pointx = point.point.x
+#     pointy = point.point.y
+#     grid_curr_x = int((pointx - map_metadata.origin.position.x) / 0.05)
+#     grid_curr_y = int((pointy - map_metadata.origin.position.y) / 0.05)
+#     curr_x = grid_curr_x
+#     curr_y = grid_curr_y
+#     map = map_holder
+#     # print(map.data[getIndex(curr_x+1,curr_y)],map.data[getIndex(curr_x-1,curr_y)],map.data[getIndex(curr_x,curr_y+1)],map.data[getIndex(curr_x,curr_y-1)])
 
 def getMap(map):
     print("[getMap] - Received map")
+    # file1 = open("/home/sree/MyFile.txt","w+") 
+    # if(map==None):
+    #     return
+    # cnt =0
+    # for val in map.data:
+    #     if (val > 0):
+    #         cnt= cnt+1
+    # print(cnt)
+    #     # file1.write(str(val) + " ")
+    # print("----------recorded map ----------------")
+    # file1.close()
     global map_holder
     map_holder = map
     if(poseReceived!=True):
@@ -161,9 +250,12 @@ def getMap(map):
 
     # globalPathPublisher.publish(path)
 
-    grid_curr_x = int((trans[0] - map_metadata.origin.position.x) / float(map_metadata.resolution))
-    grid_curr_y = int((trans[1] - map_metadata.origin.position.y) / float(map_metadata.resolution))
-    
+    grid_curr_x = int((trans[0] - map_metadata.origin.position.x) / 0.05)
+    grid_curr_y = int((trans[1] - map_metadata.origin.position.y) / 0.05)
+
+    # grid_curr_x = int((pointx - map_metadata.origin.position.x) / 0.05)
+    # grid_curr_y = int((pointy - map_metadata.origin.position.y) / 0.05)
+
     destination_x = goal.pose.position.x
     destination_y = goal.pose.position.y
 
@@ -172,6 +264,11 @@ def getMap(map):
 
     visited = [0]*(4000*4000)
     pathList = []
+
+    # curr_x = grid_curr_x
+    # curr_y = grid_curr_y
+    # print(map.data[getIndex(curr_x+1,curr_y)],map.data[getIndex(curr_x-1,curr_y)],map.data[getIndex(curr_x,curr_y+1)],map.data[getIndex(curr_x,curr_y-1)])
+
     pathList = shortestPath(grid_curr_x,grid_curr_y,grid_des_x,grid_des_y,map,pathList,visited)
     # print(pathList)
 
@@ -199,28 +296,14 @@ def laser_callback(laser):
     # print("in laser call back" + str(poseReceived))
     if(poseReceived==True):
         
-        vel_msg.linear.x = 0
-        vel_msg.linear.y = 0
-        vel_msg.linear.z = 0
-        vel_msg.angular.x = 0
-        vel_msg.angular.y = 0
-        vel_msg.angular.z = 0
-        #print(type(laser.ranges[-1]))
-        # if(float("inf") in laser.ranges): 
-        #     # print("count is " + str(laser.ranges[310:330].count(float("inf"))))
-        #     if(laser.ranges[310:330].count(float("inf")) == 20):
-        #         vel_msg.linear.x = 0.5
-        #     else:
-        #         vel_msg.linear.x = 0
-        #         vel_msg.angular.z = 0.1
-        # print("publishing message")
+        
         velocity_publisher.publish(vel_msg)
 
 
 
 def move():
     # Starts a new node
-    global turn,turn_speed,velocity_publisher,vel_msg,listener,globalPathPublisher,localPathPublisher
+    global turn,turn_speed,velocity_publisher,vel_msg,listener,globalPathPublisher,localPathPublisher,markerPublisher
     rospy.init_node('robot_runner')
     print("[move] - Initialized node 'robot_runner'")
 
@@ -236,6 +319,8 @@ def move():
     localPathPublisher = rospy.Publisher('/localPath',Path,queue_size=10)
     print("[move] - Initialized publisher for topic '/localPath'")
 
+    markerPublisher = rospy.Publisher('/marker',Marker,queue_size=10)
+
     rospy.Subscriber('/hokuyo_laser', LaserScan, laser_callback )
     print("[move] - Initialized subscriber for topic '/hokuyo_laser'")
 
@@ -248,7 +333,7 @@ def move():
     rospy.Subscriber('/map', OccupancyGrid, getMap )
     print("[move] - Initialized subscriber for topic '/map'")
 
-
+    # rospy.Subscriber('/clicked_point', PointStamped, getPoint )
 
 
     #Receiveing the user's input
@@ -271,13 +356,6 @@ def move():
     while not rospy.is_shutdown():
 
         #print("publishing velocity message")
-
-        vel_msg.linear.x = 0
-        vel_msg.linear.y = 0
-        vel_msg.linear.z = 0
-        vel_msg.angular.x = 0
-        vel_msg.angular.y = 0
-        vel_msg.angular.z = 0
 
 
         rate.sleep()
