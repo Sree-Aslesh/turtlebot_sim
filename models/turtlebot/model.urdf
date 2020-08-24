@@ -3,7 +3,7 @@
   <joint name="turtlebot__hokuyo_joint" type="fixed">
     <parent link="turtlebot/create::base"/>
     <child link="turtlebot/hokuyo::link"/>
-    <origin rpy="0  0  0" xyz="0       0       0.45"/>
+    <origin rpy="0  0  0" xyz="0     0     0.485"/>
     <axis xyz="0  0  1"/>
     <limit effort="0.0" lower="0.0" upper="0.0" velocity="0.0"/>
   </joint>
@@ -155,133 +155,133 @@
     <visual name="turtlebot__plate_0_visual">
       <origin rpy="0  0  0" xyz="-0.04334  0       0.08475"/>
       <geometry>
-        <mesh filename="package://meshes/plate_0_logo.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/plate_0_logo.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__plate_1_visual">
       <origin rpy="0  0  0" xyz="-0.00266  0       0.1419"/>
       <geometry>
-        <mesh filename="package://meshes/plate_1_logo.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/plate_1_logo.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__plate_2_visual">
       <origin rpy="0  0  0" xyz="-0.00266  0       0.1991"/>
       <geometry>
-        <mesh filename="package://meshes/plate_1_logo.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/plate_1_logo.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__plate_3_visual">
       <origin rpy="0  0  0" xyz="-0.01582  0       0.40545"/>
       <geometry>
-        <mesh filename="package://meshes/plate_2_logo.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/plate_2_logo.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__spacer_0_visual">
       <origin rpy="0  0  0" xyz="-0.00254  0.11146  0.07999"/>
       <geometry>
-        <mesh filename="package://meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__spacer_1_visual">
       <origin rpy="0  0  0" xyz="-0.00254 -0.11146  0.07999"/>
       <geometry>
-        <mesh filename="package://meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__spacer_2_visual">
       <origin rpy="0  0  0" xyz="-0.07239 -0.11146  0.07999"/>
       <geometry>
-        <mesh filename="package://meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__spacer_3_visual">
       <origin rpy="0  0  0" xyz="-0.07239  0.11146  0.07999"/>
       <geometry>
-        <mesh filename="package://meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02403-125_Spacer.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_0_visual">
       <origin rpy="0  0  0" xyz="0.06764  0.13142  0.08798"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_1_visual">
       <origin rpy="0  0  0" xyz="0.06764 -0.13142  0.08798"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_2_visual">
       <origin rpy="0  0  0" xyz="-0.05283 -0.13142  0.08798"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_3_visual">
       <origin rpy="0  0  0" xyz="-0.05283  0.13142  0.08798"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_4_visual">
       <origin rpy="0  0  0" xyz="0.06764  0.13142  0.14513"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_5_visual">
       <origin rpy="0  0  0" xyz="0.06764 -0.13142  0.14513"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_6_visual">
       <origin rpy="0  0  0" xyz="-0.05283 -0.13142  0.14513"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_2in_7_visual">
       <origin rpy="0  0  0" xyz="-0.05283  0.13142  0.14513"/>
       <geometry>
-        <mesh filename="package://meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04552-2000-RA_Turtlebot_M-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_8in_0_visual">
       <origin rpy="0  0  0" xyz="0.06764  0.13142  0.20228"/>
       <geometry>
-        <mesh filename="package://meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_8in_1_visual">
       <origin rpy="0  0  0" xyz="0.06764 -0.13142  0.20228"/>
       <geometry>
-        <mesh filename="package://meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_8in_2_visual">
       <origin rpy="0  0  0" xyz="-0.05283 -0.13142  0.20228"/>
       <geometry>
-        <mesh filename="package://meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_8in_3_visual">
       <origin rpy="0  0  0" xyz="-0.05283  0.13142  0.20228"/>
       <geometry>
-        <mesh filename="package://meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-02421-8000-RA_Turtlebot_F-F_Standoff.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_kinect_0_visual">
       <origin rpy="0  0  0" xyz="-0.10509  0.098    0.2023"/>
       <geometry>
-        <mesh filename="package://meshes/68-04556-RA_Kinect_Standoff_Assy.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04556-RA_Kinect_Standoff_Assy.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__standoff_kinect_1_visual">
       <origin rpy="0  0  0" xyz="-0.10509 -0.098    0.2023"/>
       <geometry>
-        <mesh filename="package://meshes/68-04556-RA_Kinect_Standoff_Assy.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/turtlebot/meshes/68-04556-RA_Kinect_Standoff_Assy.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
   </link>
@@ -290,14 +290,14 @@
     <child link="turtlebot__create__left_wheel"/>
     <origin rpy="0  0  0" xyz="0     0.13   0.032"/>
     <axis xyz="0  1  0"/>
-    <limit effort="0.0" lower="0.0" upper="0.0" velocity="0.0"/>
+    <limit effort="0" lower="0" upper="0" velocity="0"/>
   </joint>
   <joint name="turtlebot__create__right_wheel" type="fixed">
     <parent link="turtlebot/create::base"/>
     <child link="turtlebot__create__right_wheel"/>
     <origin rpy="0  0  0" xyz="0    -0.13   0.032"/>
     <axis xyz="0  1  0"/>
-    <limit effort="0.0" lower="0.0" upper="0.0" velocity="0.0"/>
+    <limit effort="0" lower="0" upper="0" velocity="0"/>
   </joint>
   <link name="turtlebot/create::base">
     <inertial>
@@ -326,7 +326,7 @@
     <visual name="turtlebot/create::base_visual">
       <origin rpy="0  0  0" xyz="0      0      0.0478"/>
       <geometry>
-        <mesh filename="package://meshes/create_body.dae OR meshes/create_body.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/create/meshes/create_body.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <visual name="turtlebot__create__front_wheel_visual">
@@ -401,22 +401,8 @@
     <visual name="turtlebot__hokuyo__visual">
       <origin rpy="0  0  0" xyz="0  0  0"/>
       <geometry>
-        <mesh filename="package://meshes/hokuyo.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://turtlebot_sim/models/hokuyo/meshes/hokuyo.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
   </link>
-  <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
-    <alwaysOn>true</alwaysOn>
-    <legacyMode>false</legacyMode>
-    <updateRate>40</updateRate>
-    <leftJoint>turtlebot__create__left_wheel</leftJoint>
-    <rightJoint>turtlebot__create__right_wheel</rightJoint>
-    <wheelSeparation>0.25</wheelSeparation>
-    <wheelDiameter>0.066</wheelDiameter>
-    <torque>20</torque>
-    <commandTopic>cmd_vel</commandTopic>
-    <odometryTopic>turtlebot/odom</odometryTopic>
-    <odometryFrame>turtlebot/odom</odometryFrame>
-    <robotBaseFrame>turtlebot/create::base</robotBaseFrame>
-  </plugin>
 </robot>
