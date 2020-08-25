@@ -178,18 +178,20 @@ def runTurtle(path):
     finalpath  = None
     score = 1000000000
     finalang = 0
-    for angVel in seq(-0.5,0.5,0.1):
+    angularVelocityRange = rospy.get_param("angularVelocityRange")
+    timeRange = rospy.get_param("timeRange")
+    for angVel in seq(angularVelocityRange["start"],angularVelocityRange["end"],angularVelocityRange["step"]):
         localPath = Path()
         localPath.header.frame_id="map"
         xval = 0
         yval = 0
         theta = 0
-        for secs in seq(0,5,0.5):
+        for secs in seq(timeRange["start"],timeRange["end"],timeRange["step"]):
             # xval = xval + linearVel*secs + linearVel*math.cos(angVel*secs)
             # yval = yval + linearVel*math.sin(angVel*secs)
-
-            dr = 2*3.14*0.033*(linearVel+angVel)*secs
-            dl = 2*3.14*0.033*(linearVel-angVel)*secs
+            wheelRadius = rospy.get_param("wheelRadius")
+            dr = 2*3.14*wheelRadius*(linearVel+angVel)*secs
+            dl = 2*3.14*wheelRadius*(linearVel-angVel)*secs
             dc = (dr+dl)/2
             xval = xval + dc*math.cos(theta)
             yval = yval + dc*math.sin(theta)
